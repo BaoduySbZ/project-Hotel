@@ -1,0 +1,17 @@
+ src
+   |- db-context
+     |- db.js
+   |-router
+     |-hotel-router.js
+   |-service
+     |-hotel-router.js
+  sever.js
+
+ src
+   |- admin-view
+     |-hotelComponent.jsx
+   |-modal-view
+    |-hotel-modal.jsx
+   |-service
+     |-hotelService.jsx
+    
