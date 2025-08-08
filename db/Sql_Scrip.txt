@@ -1,0 +1,111 @@
+USE management_booking;
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES=0 */;
+
+-- Table structure for table `hotel`
+DROP TABLE IF EXISTS `hotel`;
+CREATE TABLE `hotel` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `rating` decimal(2,1) DEFAULT '0.0',
+  `description` text,
+  `totalRooms` int DEFAULT '0',
+  `reviewScore` decimal(2,1) DEFAULT '0.0',
+  `image` text, -- Thêm cột image
+  `createdDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedDate` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for table `roomtypes`
+DROP TABLE IF EXISTS `roomtypes`;
+CREATE TABLE `roomtypes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `createdDate` datetime DEFAULT CURRENT_TIMESTAMP, -- Thêm cột createdDate
+  `updatedDate` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Thêm cột updatedDate
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for table `rooms`
+DROP TABLE IF EXISTS `rooms`;
+CREATE TABLE `rooms` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `image` text,
+  `price` decimal(10,2) NOT NULL,
+  `description` text,
+  `location` varchar(100) DEFAULT NULL,
+  `roomtypeId` int DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `hotelId` int DEFAULT NULL, -- Thêm hotelId
+  PRIMARY KEY (`id`),
+  KEY `roomtypeId` (`roomtypeId`),
+  KEY `hotelId` (`hotelId`), -- Thêm index cho hotelId
+  CONSTRAINT `rooms_ibfk_1` FOREIGN KEY (`roomtypeId`) REFERENCES `roomtypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `rooms_ibfk_2` FOREIGN KEY (`hotelId`) REFERENCES `hotel` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for table `account`
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userName` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `score` int DEFAULT '0',
+  `password` varchar(255) NOT NULL,
+  `role` tinyint NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for table `booking`
+DROP TABLE IF EXISTS `booking`;
+CREATE TABLE `booking` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `bookingName` varchar(100) NOT NULL,
+  `userIdBooking` int NOT NULL, -- Thay bookingEmail bằng userIdBooking
+  `bookingPhone` varchar(20) NOT NULL,
+  `checkInDate` date NOT NULL,
+  `checkOutDate` date NOT NULL,
+  `bookingRoomId` int DEFAULT NULL,
+  `bookingStatus` tinyint DEFAULT '0',
+  `paymentStatus` int DEFAULT '0',
+  `paymentMethod` int DEFAULT '0',
+  `surcharge` decimal(10,2) DEFAULT '0.00',
+  `totalFee` decimal(20,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `bookingRoomId` (`bookingRoomId`),
+  KEY `userIdBooking` (`userIdBooking`), -- Thêm index cho khóa ngoại userIdBooking
+  CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`bookingRoomId`) REFERENCES `rooms` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `booking_ibfk_2` FOREIGN KEY (`userIdBooking`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE -- Tạo khóa ngoại với bảng account
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for table `news`
+DROP TABLE IF EXISTS `news`;
+CREATE TABLE `news` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `topic` varchar(100) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `newsImage` text,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

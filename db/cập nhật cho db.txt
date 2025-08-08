@@ -1,0 +1,55 @@
+ALTER TABLE `management_booking`.`account`
+ADD COLUMN `phoneNumber` VARCHAR(20);
+-- Chọn cơ sở dữ liệu
+USE hotel_management;
+
+-- Table structure for table `services`
+DROP TABLE IF EXISTS `services`;
+CREATE TABLE `services` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `icon` varchar(255) DEFAULT NULL, -- Thêm cột icon để lưu mã hoặc đường dẫn icon
+  `createdDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedDate` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for table `promotions`
+DROP TABLE IF EXISTS `promotions`;
+CREATE TABLE `promotions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `discount` decimal(5,2) NOT NULL, -- % giảm giá
+  `description` text,
+  `startDate` date NOT NULL,
+  `endDate` date NOT NULL,
+  `createdDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedDate` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for room_services (nhiều dịch vụ cho 1 phòng)
+DROP TABLE IF EXISTS `room_services`;
+CREATE TABLE `room_services` (
+  `roomId` int NOT NULL,
+  `serviceId` int NOT NULL,
+  PRIMARY KEY (`roomId`, `serviceId`),
+  CONSTRAINT `fk_room_service_room` FOREIGN KEY (`roomId`) REFERENCES `rooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_room_service_service` FOREIGN KEY (`serviceId`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Table structure for room_promotions (nhiều khuyến mãi cho 1 phòng)
+DROP TABLE IF EXISTS `room_promotions`;
+CREATE TABLE `room_promotions` (
+  `roomId` int NOT NULL,
+  `promotionId` int NOT NULL,
+  PRIMARY KEY (`roomId`, `promotionId`),
+  CONSTRAINT `fk_room_promotion_room` FOREIGN KEY (`roomId`) REFERENCES `rooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_room_promotion_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE rooms
+ADD COLUMN createdDate DATETIME DEFAULT NOW(),
+ADD COLUMN updatedDate DATETIME DEFAULT NOW();
+ALTER TABLE rooms MODIFY COLUMN price BIGINT;
